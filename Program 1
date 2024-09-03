@@ -1,6 +1,9 @@
 #include <stdio.h>
+
 #include <stdlib.h>
+
 #include <unistd.h>
+
 #include <sys/wait.h>
 
 int main() {
@@ -15,12 +18,16 @@ int main() {
     }
     if (cid == 0) {
         printf("Child Process: PID = %d\n", getpid());
-        char *args[] = {"/bin/ls", "-l", NULL};
+        char * args[] = {
+            "/bin/ls",
+            "-l",
+            NULL
+        };
         execvp(args[0], args);
         perror("Exec failed");
         exit(EXIT_FAILURE);
     } else {
-        wait(&status);
+        wait( & status);
         if (WIFEXITED(status)) {
             printf("Parent process: Child Process terminated with exit status %d\n", WEXITSTATUS(status));
         } else {
