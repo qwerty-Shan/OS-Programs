@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
+#include <unistd.h>
+#define BUFFER_SIZE 5
+#define NUM_PRODUCERS 3
+#define NUM_CONSUMERS 2
+#define MAX_ITERATIONS 10
+int buffer[BUFFER_SIZE];
+int in = 0, out = 0;
+int producerCount = 0, consumerCount = 0;
+sem_t mutex, full, empty;
+void *producer(void *arg) {
+int item;
+int producerId = *((int *)arg);
+while (producerCount < MAX_ITERATIONS) {
+item = rand() % 100;
+sem_wait(&empty);
+sem_wait(&mutex);
+buffer[in] = item;
+printf("Producer %d produced: %d\n", producerId, item);
+in = (in + 1) % BUFFER_SIZE;
+sem_post(&mutex);
+sem_post(&full);
+producerCount++;
+sleep(rand() % 3);
+}
+pthread_exit(NULL);
+}
+void *consumer(void *arg) {
+int item;
+int consumerId = *((int *)arg);
+while (consumerCount < MAX_ITERATIONS) {
+sem_wait(&full);
+sem_wait(&mutex);
+item = buffer[out];
+printf("Consumer %d consumed: %d\n", consumerId, item);
+out = (out + 1) % BUFFER_SIZE;
+sem_post(&mutex);
+sem_post(&empty);
+consumerCount++;
+sleep(rand() % 3);
+}
+pthread_exit(NULL);
+}
+int main() {
+pthread_t producerThreads[NUM_PRODUCERS];
+pthread_t consumerThreads[NUM_CONSUMERS];
+// Initialize semaphores
+sem_init(&mutex, 0, 1);
+sem_init(&full, 0, 0);
+sem_init(&empty, 0, BUFFER_SIZE);
+int producerIds[NUM_PRODUCERS];
+int consumerIds[NUM_CONSUMERS];
+// Create producer threads
+for (int i = 0; i < NUM_PRODUCERS; i++) {
+producerIds[i] = i + 1;
+pthread_create(&producerThreads[i], NULL, producer, (void *)&producerIds[i]);
+}
+// Create consumer threads
+for (int i = 0; i < NUM_CONSUMERS; i++) {
+consumerIds[i] = i + 1;
+pthread_create(&consumerThreads[i], NULL, consumer, (void *)&consumerIds[i]);
+}
+// Join producer threads
+for (int i = 0; i < NUM_PRODUCERS; i++) {
+pthread_join(producerThreads[i], NULL);
+}
+// Join consumer threads
+for (int i = 0; i < NUM_CONSUMERS; i++) {
+pthread_join(consumerThreads[i], NULL);
+}
+// Destroy semaphores
+sem_destroy(&mutex);
+sem_destroy(&full);
+sem_destroy(&empty);
+return 0;
+}
