@@ -1,0 +1,40 @@
+process and a writer process. Use mkfifo, open, read, write and close APIs in your program.
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <string.h>
+#define FIFO_NAME "myfifo"
+int main() {
+int fd;
+char message[] = "Hello, Reader!"; // Message to be sent by the writer process
+char buffer[100];
+// Create the FIFO (named pipe)
+mkfifo(FIFO_NAME, 0666);
+// Writer Process
+if (fork() == 0) {
+// Open the FIFO for writing
+fd = open(FIFO_NAME, O_WRONLY);
+// Write the message to the FIFO
+write(fd, message, strlen(message) + 1);
+printf("Writer: Sent message - %s\n", message);
+// Close the FIFO
+close(fd);
+exit(0);
+}
+// Reader Process
+else {
+// Open the FIFO for reading
+fd = open(FIFO_NAME, O_RDONLY);
+// Read the message from the FIFO
+read(fd, buffer, sizeof(buffer));
+printf("Reader: Received message - %s\n", buffer);
+// Close the FIFO
+close(fd);
+// Remove the FIFO
+unlink(FIFO_NAME);
+}
+return 0;
+}
