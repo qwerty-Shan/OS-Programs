@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdbool.h>
+#define MAX_PROCESS 10
+#define MAX_RESOURCE 10
+int available[MAX_RESOURCE];
+int max[MAX_PROCESS][MAX_RESOURCE];
+int allocation[MAX_PROCESS][MAX_RESOURCE];
+int need[MAX_PROCESS][MAX_RESOURCE];
+bool finish[MAX_PROCESS];
+void input(int processes, int resources) {
+printf("Enter available resources: ");
+for (int i = 0; i < resources; i++) {
+scanf("%d", &available[i]);
+}
+printf("Enter maximum resources for each process:\n");
+for (int i = 0; i < processes; i++) {
+printf("Process %d: ", i);
+for (int j = 0; j < resources; j++) {
+scanf("%d", &max[i][j]);
+}
+}
+printf("Enter allocated resources for each process:\n");
+for (int i = 0; i < processes; i++) {
+printf("Process %d: ", i);
+for (int j = 0; j < resources; j++) {
+scanf("%d", &allocation[i][j]);
+need[i][j] = max[i][j] - allocation[i][j];
+}
+finish[i] = false;
+}
+}
+bool isSafe(int processes, int resources) {
+int work[MAX_RESOURCE];
+for (int i = 0; i < resources; i++) {
+work[i] = available[i];
+}
+bool finishAll = false;
+while (!finishAll) {
+finishAll = true;
+for (int i = 0; i < processes; i++) {
+if (finish[i] == false) {
+bool canAllocate = true;
+for (int j = 0; j < resources; j++) {
+if (need[i][j] > work[j]) {
+canAllocate = false;
+break;
+}
+}
+if (canAllocate) {
+finish[i] = true;
+for (int j = 0; j < resources; j++) {
+work[j] += allocation[i][j];
+}
+finishAll = false;
+}
+}
+}
+}
+for (int i = 0; i < processes; i++) {
+if (finish[i] == false) {
+return false; // System is in an unsafe state
+}
+}
+return true; // System is in a safe state
+}
+int main() {
+int processes, resources;
+printf("Enter number of processes: ");
+scanf("%d", &processes);
+printf("Enter number of resources: ");
+scanf("%d", &resources);
+input(processes, resources);
+if (isSafe(processes, resources)) {
+printf("System is in safe state.\n");
+} else {
+printf("System is in unsafe state.\n");
+}
+return 0;
+}
