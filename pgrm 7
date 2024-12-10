@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_FRAMES 3 // Number of frames
+int fifo(int pages[], int n, int capacity);
+int lru(int pages[], int n, int capacity);
+int main() {
+int choice, n;
+int pages[100]; // Assume a maximum of 100 pages for simplicity
+int capacity = MAX_FRAMES;
+printf("Enter the number of pages: ");
+scanf("%d", &n);
+printf("Enter the sequence of pages (separated by space): ");
+for (int i = 0; i < n; i++) {
+scanf("%d", &pages[i]);
+}
+while (1) {
+printf("\nPage Replacement Algorithms Menu:\n");
+printf("1. FIFO (First-In-First-Out)\n");
+printf("2. LRU (Least Recently Used)\n");
+printf("3. Exit\n");
+printf("Enter your choice: ");
+scanf("%d", &choice);
+switch (choice) {
+case 1:
+break;
+case 2:
+break;
+case 3:
+exit(0);
+default:
+printf("Page Faults using FIFO: %d\n", fifo(pages, n, capacity));
+printf("Page Faults using LRU: %d\n", lru(pages, n, capacity));
+printf("Invalid choice. Please try again.\n");
+}
+}
+return 0;
+}
+int fifo(int pages[], int n, int capacity) {
+int frame[capacity];
+int pageFaults = 0;
+int rear = -1;
+for (int i = 0; i < n; i++) {
+int pageFound = 0;
+for (int j = 0; j < capacity; j++) {
+if (frame[j] == pages[i]) {
+pageFound = 1;
+break;
+}
+}
+if (!pageFound) {
+if (rear < capacity - 1) {
+rear++;
+} else {
+rear = 0;
+}
+frame[rear] = pages[i];
+pageFaults++;
+}
+}
+return pageFaults;
+}
+int lru(int pages[], int n, int capacity) {
+int frame[capacity];
+int pageFaults = 0;
+int counter[capacity];
+for (int i = 0; i < capacity; i++) {
+frame[i] = -1;
+counter[i] = 0;
+}
+for (int i = 0; i < n; i++) {
+int pageFound = 0;
+for (int j = 0; j < capacity; j++) {
+if (frame[j] == pages[i]) {
+pageFound = 1;
+counter[j] = i;
+break;
+}
+}
+if (!pageFound) {
+int lruPage = 0;
+for (int j = 1; j < capacity; j++) {
+if (counter[j] < counter[lruPage]) {
+lruPage = j;
+}
+}
+frame[lruPage] = pages[i];
+counter[lruPage] = i;
+pageFaults++;
+}
+}
+return pageFaults;
+}
