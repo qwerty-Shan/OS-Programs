@@ -1,0 +1,29 @@
+class MyRunnable implements Runnable {
+   public void run() {
+       try {
+
+           Thread.sleep(500);
+           System.out.println("Thread is running: " + Thread.currentThread().getName());
+       } catch (InterruptedException e) {
+           System.out.println("Thread interrupted");
+       }
+   }
+}
+ 
+public class Main {
+   public static void main(String[] args) {
+
+       MyRunnable runnable1 = new MyRunnable();
+       MyRunnable runnable2 = new MyRunnable();
+ 
+
+       Thread thread1 = new Thread(runnable1);
+       Thread thread2 = new Thread(runnable2);
+ 
+
+       thread1.start();
+       thread2.start();
+   }
+}
+ 
+ 
