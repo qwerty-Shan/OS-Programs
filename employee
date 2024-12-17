@@ -1,0 +1,43 @@
+public class Employee {
+   // Instance variables
+   private int id;
+   private String name;
+   private double salary;
+ 
+   // Constructor
+   public Employee(int id, String name, double salary) {
+       this.id = id;
+       this.name = name;
+       this.salary = salary;
+   }
+ 
+   // Method to raise salary by a given percentage
+   public void raiseSalary(double percent) {
+       double increaseAmount = salary * (percent / 100);
+       salary += increaseAmount;
+   }
+ 
+   // Method to display employee details
+   public void displayDetails() {
+       System.out.println("Employee ID: " + id);
+       System.out.println("Employee Name: " + name);
+       System.out.println("Employee Salary: $" + salary);
+   }
+ 
+   // Main method for demonstration
+   public static void main(String[] args) {
+       // Create an Employee object
+       Employee employee = new Employee(101, "John Doe", 50000);
+ 
+       // Display original details
+       System.out.println("Original Employee Details:");
+       employee.displayDetails();
+       System.out.println();
+ 
+       // Raise salary by 10%
+       System.out.println("After Salary Raise:");
+       employee.raiseSalary(10);
+       employee.displayDetails();
+   }
+}
+ 
