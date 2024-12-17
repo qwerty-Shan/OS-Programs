@@ -1,0 +1,78 @@
+class Shape {
+
+   public void draw() {
+       System.out.println("Drawing a shape");
+   }
+ 
+
+   public void erase() {
+       System.out.println("Erasing a shape");
+   }
+}
+ 
+
+class Circle extends Shape {
+
+   @Override
+   public void draw() {
+       System.out.println("Drawing a circle");
+   }
+ 
+
+   @Override
+   public void erase() {
+       System.out.println("Erasing a circle");
+   }
+}
+ 
+
+class Triangle extends Shape {
+
+   @Override
+   public void draw() {
+       System.out.println("Drawing a triangle");
+   }
+ 
+
+   @Override
+   public void erase() {
+       System.out.println("Erasing a triangle");
+   }
+}
+ 
+
+class Square extends Shape {
+
+   @Override
+   public void draw() {
+       System.out.println("Drawing a square");
+   }
+ 
+
+   @Override
+   public void erase() {
+       System.out.println("Erasing a square");
+   }
+}
+ 
+
+public class Main {
+   public static void main(String[] args) {
+
+       Shape circle = new Circle();
+       Shape triangle = new Triangle();
+       Shape square = new Square();
+ 
+
+       drawAndErase(circle);
+       drawAndErase(triangle);
+       drawAndErase(square);
+   }
+ 
+
+   public static void drawAndErase(Shape shape) {
+       shape.draw(); // Calls the draw method of the appropriate subclass
+       shape.erase(); // Calls the erase method of the appropriate subclass
+   }
+}
+ 
